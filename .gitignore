@@ -28,5 +28,11 @@ CLAUDE.md
 app_icon/*
 !app_icon/app_icon.png
 
-# Documentation
-docs/
+# Tasks (plan/lessons, local only - never published)
+tasks/
+
+# Documentation (internal specs stay private; only the release CHANGELOG is published)
+docs/*
+!docs/release/
+docs/release/*
+!docs/release/CHANGELOG.md
