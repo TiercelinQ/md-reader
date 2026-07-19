@@ -1,8 +1,11 @@
 """Tests smoke du volet document (QtWebEngine)."""
 
+import pytest
 from PySide6.QtWidgets import QLineEdit
 
 from views.document_view import DocumentView
+
+pytestmark = pytest.mark.webengine
 
 
 def test_document_view_objectname(qtbot):

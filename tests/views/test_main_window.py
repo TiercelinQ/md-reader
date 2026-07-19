@@ -1,6 +1,10 @@
 """Tests smoke de la fenêtre principale."""
 
+import pytest
+
 from views.main_window import MainWindow
+
+pytestmark = pytest.mark.webengine
 
 
 def test_main_window_instanciation(qtbot):

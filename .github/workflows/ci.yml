@@ -10,9 +10,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     env:
-      QT_QPA_PLATFORM: xcb
-      QTWEBENGINE_CHROMIUM_FLAGS: "--no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --single-process"
-      QTWEBENGINE_DISABLE_SANDBOX: "1"
+      QT_QPA_PLATFORM: offscreen
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -23,15 +21,14 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install system libraries for Qt (xcb) + QtWebEngine
+      # QtWebEngine (Mermaid view) is imported transitively by the controllers,
+      # so its shared libraries must be present even though the QWebEngineView
+      # tests themselves are excluded from CI (marker "webengine", see below).
+      - name: Install system libraries for Qt (offscreen) + QtWebEngine import
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            xvfb \
-            libegl1 libgl1 libxkbcommon0 libxkbcommon-x11-0 \
-            libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
-            libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 \
-            libxcb-xkb1 libxcb-util1 libxcb-xfixes0 \
+            libegl1 libgl1 libxkbcommon0 \
             libnss3 libnspr4 libdbus-1-3 \
             libxcomposite1 libxdamage1 libxrandr2 libxi6 libxtst6 \
             libxrender1 libfontconfig1 libgbm1 libasound2t64
@@ -50,5 +47,7 @@ jobs:
       - name: Type check (mypy strict)
         run: mypy .
 
-      - name: Tests (pytest, under Xvfb for QtWebEngine)
-        run: xvfb-run -a pytest
+      # QWebEngineView instances segfault at teardown under headless CI (Chromium),
+      # so the "webengine" tests are excluded here and run locally instead.
+      - name: Tests (pytest, excluding QtWebEngine views)
+        run: pytest -m "not webengine"
