@@ -9,7 +9,7 @@ import json
 from collections.abc import Callable
 
 from PySide6.QtCore import QSize, Qt, QUrl, Signal
-from PySide6.QtGui import QKeySequence, QShortcut
+from PySide6.QtGui import QColor, QKeySequence, QShortcut
 from PySide6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
@@ -46,6 +46,7 @@ class DocumentView(QFrame):
     """Panneau central : QWebEngineView + barre de recherche (#find_bar)."""
 
     external_link_clicked = Signal(QUrl)
+    load_finished = Signal(bool)
 
     def __init__(self, theme: str, parent: QFrame | None = None) -> None:
         super().__init__(parent)
@@ -57,7 +58,7 @@ class DocumentView(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        self._find_bar = self._build_find_bar(theme)
+        self._find_bar = self._build_find_bar()
         self._find_bar.hide()
         layout.addWidget(self._find_bar)
 
@@ -65,6 +66,7 @@ class DocumentView(QFrame):
         self._page = _NavigationPage(self._web_view)
         self._web_view.setPage(self._page)
         self._page.external_link.connect(self.external_link_clicked)
+        self._web_view.loadFinished.connect(self.load_finished)
         settings = self._web_view.settings()
         settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
         settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanOpenWindows, False)
@@ -72,6 +74,8 @@ class DocumentView(QFrame):
 
         escape = QShortcut(QKeySequence(Qt.Key.Key_Escape), self._find_input)
         escape.activated.connect(self.hide_find_bar)
+
+        self.apply_theme(theme)
 
     # -- API publique --------------------------------------------------------
 
@@ -111,15 +115,27 @@ class DocumentView(QFrame):
         )
 
     def apply_theme(self, theme: str) -> None:
-        """Recolore les icônes de la barre de recherche."""
+        """Recolore les icônes de la barre de recherche et aligne le fond de la vue web."""
         self._theme = theme
         self._btn_find_prev.setIcon(get_icon("chevron-up", "default", theme, config.ICON_SM))
         self._btn_find_next.setIcon(get_icon("chevron-down", "default", theme, config.ICON_SM))
         self._btn_find_close.setIcon(get_icon("x", "muted", theme, config.ICON_SM))
+        self._apply_web_background(theme)
+
+    def _apply_web_background(self, theme: str) -> None:
+        """Aligne le fond de la vue web sur le neutre `bg` du thème.
+
+        La surface peinte par Chromium n'est pas stylable via QSS ; sans cet
+        alignement, les zones exposées pendant un redimensionnement affichent un
+        fond blanc ou des pixels périmés (clignotement). La valeur `bg` par thème
+        est réutilisée depuis `config.SPLASH_COLORS` (même neutre, surface peinte).
+        """
+        bg = config.SPLASH_COLORS.get(theme, config.SPLASH_COLORS["light"])["bg"]
+        self._page.setBackgroundColor(QColor(bg))
 
     # -- Construction interne ------------------------------------------------
 
-    def _build_find_bar(self, theme: str) -> QFrame:
+    def _build_find_bar(self) -> QFrame:
         bar = QFrame(self)
         bar.setObjectName("find_bar")
         bar.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
@@ -141,7 +157,6 @@ class DocumentView(QFrame):
         bar_layout.addWidget(self._btn_find_next)
         bar_layout.addWidget(self._btn_find_close)
 
-        self.apply_theme(theme)
         return bar
 
     @staticmethod

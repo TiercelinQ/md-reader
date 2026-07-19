@@ -8,7 +8,7 @@ et sémantiques vivent dans les feuilles QSS et les CSS de contenu.
 
 # --- Identité ---------------------------------------------------------------
 APP_NAME: str = "MD Reader"
-APP_VERSION: str = "1.0.0"
+APP_VERSION: str = "1.0.1"
 
 # --- Préférences ------------------------------------------------------------
 PREFERENCES_FILE: str = "preferences.json"
@@ -23,7 +23,11 @@ LOG_BACKUP_COUNT: int = 5
 TOAST_POSITION: str = "top-right"
 
 # --- Splash (peint programmatiquement, non stylable QSS — exception) --------
-SPLASH_MIN_DURATION_MS: int = 1200
+# Le splash se ferme dès que la page d'accueil a fini de charger (disponibilité
+# réelle), en respectant ce plancher minimal. SPLASH_MAX_WAIT_MS est le repli si
+# l'événement loadFinished ne survient pas, pour garantir la fermeture.
+SPLASH_MIN_DURATION_MS: int = 500
+SPLASH_MAX_WAIT_MS: int = 4000
 SPLASH_COLORS: dict[str, dict[str, str]] = {
     "light": {"bg": "#FBFBFC", "text": "#111318"},
     "dark": {"bg": "#17191C", "text": "#EFF0F0"},

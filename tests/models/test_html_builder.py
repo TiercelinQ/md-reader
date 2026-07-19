@@ -9,15 +9,25 @@ def test_build_page_contient_le_corps_et_le_doctype():
     assert "<!DOCTYPE html>" in page
 
 
-def test_build_page_inclut_le_conteneur_et_mermaid():
+def test_build_page_inclut_le_conteneur():
     page = build_page("<p>x</p>", "light")
     assert "markdown-body" in page
-    assert "mermaid" in page
+
+
+def test_build_page_inclut_mermaid_si_diagramme_present():
+    page = build_page('<pre class="mermaid">graph TD; A--&gt;B;</pre>', "light")
+    assert "mermaid.min.js" in page
+
+
+def test_build_page_omet_mermaid_sans_diagramme():
+    page = build_page("<p>x</p>", "light")
+    assert "mermaid.min.js" not in page
 
 
 def test_build_page_theme_sombre_diffère_du_clair():
-    light = build_page("<p>x</p>", "light")
-    dark = build_page("<p>x</p>", "dark")
+    body = '<pre class="mermaid">graph TD; A--&gt;B;</pre>'
+    light = build_page(body, "light")
+    dark = build_page(body, "dark")
     assert light != dark
     assert 'theme: "neutral"' in light
     assert 'theme: "dark"' in dark

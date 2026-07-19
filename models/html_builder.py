@@ -69,8 +69,9 @@ def build_page(body_html: str, theme: str) -> str:
     """
     content_css = _read_resource(f"resources/content_{theme}.css")
     pygments_css = _read_resource(f"resources/pygments_{theme}.css")
-    mermaid_src = Path(resource_path("resources/mermaid.min.js")).resolve().as_uri()
-    mermaid_theme = _MERMAID_THEME.get(theme, "neutral")
+    # mermaid.min.js (~3 Mo) n'est chargé que si le document contient un diagramme :
+    # inutile de charger et parser 3 Mo de JS pour un document sans bloc mermaid.
+    mermaid_section = _mermaid_section(theme) if 'class="mermaid"' in body_html else ""
 
     return f"""<!DOCTYPE html>
 <html lang="fr">
@@ -84,7 +85,16 @@ def build_page(body_html: str, theme: str) -> str:
 <article class="markdown-body">
 {body_html}
 </article>
-<script src="{mermaid_src}"></script>
+{mermaid_section}
+</body>
+</html>"""
+
+
+def _mermaid_section(theme: str) -> str:
+    """Renvoie le script d'inclusion + d'init de mermaid.js pour le thème donné."""
+    mermaid_src = Path(resource_path("resources/mermaid.min.js")).resolve().as_uri()
+    mermaid_theme = _MERMAID_THEME.get(theme, "neutral")
+    return f"""<script src="{mermaid_src}"></script>
 <script>
 // run() explicite : fiable même si le DOM est déjà analysé (contrairement à startOnLoad).
 if (window.mermaid) {{
@@ -93,9 +103,7 @@ if (window.mermaid) {{
   }});
   window.mermaid.run({{ querySelector: ".mermaid" }});
 }}
-</script>
-</body>
-</html>"""
+</script>"""
 
 
 def _inline_icon(name: str, color: str) -> str:

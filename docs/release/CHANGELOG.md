@@ -5,6 +5,14 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-07-19
+### Changed
+- Faster startup: the splash screen is now dismissed as soon as the welcome page is ready instead of after a fixed delay.
+- Faster document rendering: the Mermaid script is loaded only for documents that actually contain a diagram.
+
+### Fixed
+- Removed content flicker when resizing the window: the web view background now matches the active theme.
+
 ## [1.0.0] - 2026-07-18
 ### Added
 - Initial release.
