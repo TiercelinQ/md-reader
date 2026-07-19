@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       QT_QPA_PLATFORM: xcb
-      QT_DEBUG_PLUGINS: "1"
-      QTWEBENGINE_CHROMIUM_FLAGS: "--no-sandbox --disable-gpu --disable-software-rasterizer"
+      QTWEBENGINE_CHROMIUM_FLAGS: "--no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --single-process"
       QTWEBENGINE_DISABLE_SANDBOX: "1"
     steps:
       - name: Checkout
