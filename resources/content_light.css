@@ -1,0 +1,208 @@
+/* content_light.css — rendu Markdown (MD Reader), palette Anthracite clair.
+   Frontière assumée : le contenu de la vue web est stylé ici (pas en QSS). */
+
+:root {
+  --bg: #fbfbfc;
+  --text: #111318;
+  --text-subtle: #6f7073;
+  --border: #dee1e6;
+  --border-subtle: #eceef1;
+  --border-strong: #c5c8cd;
+  --bg-subtle: #f2f3f5;
+  --bg-muted: #e9ebee;
+  --accent: #374151;
+  --accent-strong: #202630;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family:
+    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.markdown-body {
+  max-width: none;
+  margin: 0;
+  padding: 32px 40px 96px;
+}
+
+/* Titres */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 1.6em 0 0.6em;
+}
+.markdown-body h1 {
+  font-size: 2em;
+  font-weight: 700;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+.markdown-body h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.markdown-body h3 {
+  font-size: 1.25em;
+}
+.markdown-body h4 {
+  font-size: 1.05em;
+}
+.markdown-body h5 {
+  font-size: 0.95em;
+  color: var(--text-subtle);
+}
+.markdown-body h6 {
+  font-size: 0.9em;
+  color: var(--text-subtle);
+}
+.markdown-body h1:first-child,
+.markdown-body h2:first-child {
+  margin-top: 0;
+}
+
+/* Paragraphes, listes */
+.markdown-body p {
+  margin: 0 0 1em;
+}
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 1em;
+  padding-left: 1.6em;
+}
+.markdown-body li {
+  margin: 0.25em 0;
+}
+.markdown-body li > ul,
+.markdown-body li > ol {
+  margin: 0.25em 0;
+}
+
+/* Liens */
+.markdown-body a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-strong);
+}
+.markdown-body a:hover {
+  color: var(--accent-strong);
+  border-bottom-color: var(--accent-strong);
+}
+
+/* Citations */
+.markdown-body blockquote {
+  margin: 0 0 1em;
+  padding: 0.2em 1em;
+  color: var(--text-subtle);
+  border-left: 4px solid var(--border-strong);
+  background-color: var(--bg-subtle);
+  border-radius: 0 5px 5px 0;
+}
+.markdown-body blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* Code inline */
+.markdown-body code {
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  background-color: var(--bg-muted);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+/* Blocs de code (codehilite = classe Pygments) */
+.markdown-body pre {
+  margin: 0 0 1em;
+  padding: 14px 16px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow-x: auto;
+}
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.875em;
+}
+.markdown-body .codehilite {
+  margin: 0 0 1em;
+}
+.markdown-body .codehilite pre {
+  margin: 0;
+}
+
+/* Tableaux */
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 0 0 1em;
+  width: auto;
+  max-width: 100%;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--border-subtle);
+  padding: 6px 12px;
+  text-align: left;
+}
+.markdown-body th {
+  background-color: var(--bg-subtle);
+  border-bottom: 2px solid var(--border-strong);
+  font-weight: 600;
+}
+
+/* Divers */
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+.markdown-body hr {
+  border: none;
+  height: 1px;
+  background-color: var(--border);
+  margin: 2em 0;
+}
+.markdown-body kbd {
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.85em;
+  background-color: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+}
+
+/* Diagrammes Mermaid */
+.markdown-body pre.mermaid {
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+/* Notes de bas de page */
+.markdown-body .footnote {
+  font-size: 0.9em;
+  color: var(--text-subtle);
+}

@@ -1,0 +1,109 @@
+/* ============================================================
+   styles_light.qss — MD Reader v1.0.0
+   Theme: light
+   Reference: design-system.md v2.0 (palette Anthracite, dérivée)
+   ============================================================ */
+
+/* --- BASE -------------------------------------------------- */
+/* token : bg / text */
+QMainWindow { background-color: #FBFBFC; color: #111318; }
+QWidget { color: #111318; }
+
+/* --- TOPBAR ------------------------------------------------ */
+/* token : bg / border / topbar-height */
+QFrame#topbar { background-color: #FBFBFC; border-bottom: 1px solid #DEE1E6;
+                min-height: 48px; max-height: 48px; }
+/* token : text / semibold / base */
+QLabel#app_title { color: #111318; font-size: 16px; font-weight: 600; }
+/* token : text-subtle / sm */
+QLabel#file_label { color: #6F7073; font-size: 14px; }
+
+/* --- TOOLBUTTONS (ghost) ----------------------------------- */
+/* token : text-subtle / border / bg-muted / radius — hover = renforcement de bordure */
+QToolButton { background-color: transparent; border: 1px solid transparent;
+              border-radius: 5px; padding: 4px; }
+QToolButton:hover { border: 1px solid #DEE1E6; }
+QToolButton:pressed { background-color: #E9EBEE; }
+QToolButton:focus { border: 1px solid #374151; }
+QToolButton:disabled { color: rgba(17, 24, 30, 0.4); }
+QToolButton::menu-indicator { image: none; width: 0; }
+
+/* --- SPLITTER (gouttière) ---------------------------------- */
+/* token : bg-muted / border-strong */
+QSplitter#main_splitter::handle { background-color: #E9EBEE; }
+QSplitter#main_splitter::handle:horizontal { width: 6px; }
+QSplitter#main_splitter::handle:hover { background-color: #C5C8CD; }
+
+/* --- EXPLORER PANEL ---------------------------------------- */
+/* token : bg-subtle / border / text-subtle */
+QFrame#explorer_panel { background-color: #F2F3F5; }
+QFrame#explorer_header { background-color: #F2F3F5; border-bottom: 1px solid #DEE1E6; }
+QLabel#explorer_header_label { color: #6F7073; font-size: 12px; font-weight: 600; }
+QLabel#explorer_empty { color: #6F7073; font-size: 13px; padding: 24px; }
+
+/* --- TOC PANEL --------------------------------------------- */
+/* token : bg-subtle / border / text-subtle */
+QFrame#toc_panel { background-color: #F2F3F5; }
+QLabel#toc_header { background-color: #F2F3F5; border-bottom: 1px solid #DEE1E6;
+                    color: #6F7073; font-size: 12px; font-weight: 600; padding: 8px 12px; }
+QLabel#toc_empty { color: #6F7073; font-size: 13px; padding: 24px; }
+
+/* --- TREES ------------------------------------------------- */
+/* token : bg-subtle / bg-muted / primary-600 (sélection = remplissage accent, palette grise) */
+QTreeView { background-color: #F2F3F5; border: none; outline: 0; }
+QTreeView::item { padding: 4px 6px; border: 1px solid transparent; color: #111318; }
+QTreeView::item:hover { background-color: #E9EBEE; }
+QTreeView::item:selected { background-color: #374151; color: #FFFFFF; }
+
+/* --- DOCUMENT PANEL (conteneur de la vue web, non stylé au-delà du fond) --- */
+/* token : bg */
+QFrame#document_panel { background-color: #FBFBFC; }
+
+/* --- FIND BAR ---------------------------------------------- */
+/* token : bg-subtle / border / primary-600 / radius */
+QFrame#find_bar { background-color: #F2F3F5; border-bottom: 1px solid #DEE1E6; }
+QLineEdit#find_input { background-color: #FBFBFC; border: 1px solid #DEE1E6;
+                       border-radius: 5px; color: #111318; padding: 6px 10px;
+                       selection-background-color: #F0F2F5; selection-color: #111318; }
+QLineEdit#find_input:focus { border: 2px solid #374151; padding: 5px 9px; }
+
+/* --- STATUSBAR --------------------------------------------- */
+/* token : bg-muted / border / text-subtle / statusbar-height / xs */
+QStatusBar { background-color: #E9EBEE; border-top: 1px solid #DEE1E6;
+             min-height: 28px; max-height: 28px; padding: 0 16px; }
+QStatusBar::item { border: none; }
+QLabel#status_message, QLabel#status_info { color: #6F7073; font-size: 12px; }
+
+/* --- MENU (récents) ---------------------------------------- */
+/* token : bg-elevated / border-strong / bg-muted / text-muted / radius */
+QMenu { background-color: #FBFBFC; border: 1px solid #C5C8CD; border-radius: 5px; padding: 4px; }
+QMenu::item { padding: 6px 12px; border-radius: 3px; color: #111318; }
+QMenu::item:selected { background-color: #E9EBEE; }
+QMenu::item:disabled { color: #A2A3A5; }
+QMenu::separator { height: 1px; background: #ECEEF1; margin: 4px 8px; }
+
+/* --- TOASTS ------------------------------------------------ */
+/* token : *-50 / *-600 / border-width-accent / radius */
+QFrame#toast_success { background-color: #EBF2F1; border-left: 4px solid #328F6D; border-radius: 5px; }
+QFrame#toast_warning { background-color: #F4F1EB; border-left: 4px solid #A58427; border-radius: 5px; }
+QFrame#toast_danger  { background-color: #F6ECEE; border-left: 4px solid #BA3B52; border-radius: 5px; }
+QFrame#toast_info    { background-color: #F0F2F5; border-left: 4px solid #374151; border-radius: 5px; }
+QLabel#toast_message { color: #111318; font-size: 14px; font-weight: 500; }
+QLabel#toast_description { color: #6F7073; font-size: 12px; }
+QToolButton#toast_close { background-color: transparent; border: 1px solid transparent; border-radius: 5px; }
+QToolButton#toast_close:hover { border: 1px solid #DEE1E6; }
+
+/* --- SCROLLBARS -------------------------------------------- */
+/* token : bg-muted / border-strong / radius */
+QScrollBar:vertical   { background: transparent; width: 12px; margin: 0; }
+QScrollBar:horizontal { background: transparent; height: 12px; margin: 0; }
+QScrollBar::handle:vertical,
+QScrollBar::handle:horizontal { background: #E9EBEE; border-radius: 5px; min-height: 24px; min-width: 24px; }
+QScrollBar::handle:hover { background: #C5C8CD; }
+QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+
+/* --- TOOLTIP ----------------------------------------------- */
+/* token : text (fond inversé) / bg / border / radius / xs */
+QToolTip { background-color: #111318; color: #FBFBFC; border: 1px solid #DEE1E6;
+           border-radius: 5px; padding: 4px 8px; font-size: 12px; }
