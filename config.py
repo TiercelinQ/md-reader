@@ -8,7 +8,7 @@ et sémantiques vivent dans les feuilles QSS et les CSS de contenu.
 
 # --- Identité ---------------------------------------------------------------
 APP_NAME: str = "MD Reader"
-APP_VERSION: str = "1.0.1"
+APP_VERSION: str = "1.1.0"
 
 # --- Préférences ------------------------------------------------------------
 PREFERENCES_FILE: str = "preferences.json"
@@ -87,8 +87,11 @@ ZOOM_DEFAULT: float = 1.0
 # --- Dimensions de layout (structure, non stylable QSS) ---------------------
 WINDOW_MIN_SIZE: tuple[int, int] = (1024, 768)
 WINDOW_DEFAULT_SIZE: tuple[int, int] = (1280, 800)
-EXPLORER_WIDTH: int = 280
+EXPLORER_WIDTH: int = 240
 TOC_WIDTH: int = 240
+# Largeur mini des volets : sous le sizeHint du contenu, sinon QSplitter refuse de
+# rétrécir l'explorateur (son sizeHint ~294) et les largeurs persistées sont ignorées.
+PANEL_MIN_WIDTH: int = 160
 
 # --- Rendu Markdown ---------------------------------------------------------
 # "extra" fournit fenced_code, tables, footnotes, attr_list, def_list, md_in_html.

@@ -68,10 +68,14 @@ def _wire(
     window.btn_toggle_toc.clicked.connect(main_controller.toggle_toc)
     window.recents_menu.aboutToShow.connect(main_controller.populate_recents)
     document_controller.document_loaded.connect(main_controller.on_document_loaded)
+    document_controller.active_document_changed.connect(main_controller.on_active_document_changed)
 
     window.explorer.file_selected.connect(document_controller.load_document)
     window.toc.heading_selected.connect(document_controller.on_heading_selected)
     window.document.external_link_clicked.connect(document_controller.on_external_link)
+    window.document.tab_activated.connect(document_controller.on_tab_activated)
+    window.document.tab_closed.connect(document_controller.on_tab_closed)
+    window.close_tab_requested.connect(document_controller.close_active_tab)
     window.btn_search.clicked.connect(document_controller.toggle_search)
     window.btn_zoom_in.clicked.connect(document_controller.zoom_in)
     window.btn_zoom_out.clicked.connect(document_controller.zoom_out)
@@ -107,8 +111,11 @@ def main() -> None:
     _wire(window, document_controller, main_controller)
 
     main_controller.restore_state()
-    document_controller.show_welcome()
-    app.aboutToQuit.connect(main_controller.save_state)
+    document_controller.restore_session()
+    # Sauvegarde sur closeEvent (fenêtre encore visible) et non aboutToQuit : sinon
+    # isVisible() des volets renvoie False et l'état persisté est corrompu.
+    window.closing.connect(main_controller.save_state)
+    window.closing.connect(document_controller.save_session)
 
     window.show()
     _schedule_splash_dismiss(splash, window)

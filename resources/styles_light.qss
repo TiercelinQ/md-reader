@@ -59,6 +59,22 @@ QTreeView::item:selected { background-color: #374151; color: #FFFFFF; }
 /* token : bg */
 QFrame#document_panel { background-color: #FBFBFC; }
 
+/* --- DOCUMENT TABS (onglets de fichiers) ------------------- */
+/* token : bg / bg-subtle / text / text-subtle / border / primary-600 / radius
+   Onglets style éditeur : onglet actif = fond bg + bordure haute accent 2px ;
+   hover inactif = renforcement de bordure (design-system §8). Pas de SlidingUnderline. */
+QTabWidget#doc_tab_widget::pane { border: none; border-top: 1px solid #DEE1E6; }
+QTabBar { background-color: #F2F3F5; }
+QTabBar::tab { background-color: #F2F3F5; color: #6F7073;
+               border: 1px solid transparent; border-top: 2px solid transparent;
+               padding: 8px 10px; margin-right: 1px; outline: none; }
+QTabBar::tab:hover:!selected { border: 1px solid #DEE1E6; border-top: 2px solid #DEE1E6; }
+QTabBar::tab:selected { background-color: #FBFBFC; color: #111318; border-top: 2px solid #374151; }
+/* croix : taille fixée en Python (setFixedSize) → carré compact centré par QTabBar */
+QToolButton#tab_close { background-color: transparent; border: 1px solid transparent;
+                        border-radius: 3px; }
+QToolButton#tab_close:hover { border: 1px solid #C5C8CD; }
+
 /* --- FIND BAR ---------------------------------------------- */
 /* token : bg-subtle / border / primary-600 / radius */
 QFrame#find_bar { background-color: #F2F3F5; border-bottom: 1px solid #DEE1E6; }

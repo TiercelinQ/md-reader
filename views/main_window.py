@@ -8,7 +8,14 @@ from collections.abc import Callable
 from pathlib import Path
 
 from PySide6.QtCore import QSize, Qt, Signal
-from PySide6.QtGui import QGuiApplication, QIcon, QKeySequence, QResizeEvent, QShortcut
+from PySide6.QtGui import (
+    QCloseEvent,
+    QGuiApplication,
+    QIcon,
+    QKeySequence,
+    QResizeEvent,
+    QShortcut,
+)
 from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
@@ -35,6 +42,8 @@ class MainWindow(QMainWindow):
 
     zoom_reset_requested = Signal()
     reload_requested = Signal()
+    close_tab_requested = Signal()
+    closing = Signal()
 
     def __init__(self, theme: str) -> None:
         super().__init__()
@@ -90,13 +99,19 @@ class MainWindow(QMainWindow):
         """Indique si le volet sommaire est visible."""
         return self.toc.isVisible()
 
-    def splitter_sizes(self) -> list[int]:
-        """Renvoie les tailles courantes des volets."""
-        return self._splitter.sizes()
+    def explorer_width(self) -> int:
+        """Largeur courante du volet explorateur (0 s'il est masqué)."""
+        return self._splitter.sizes()[0]
 
-    def set_splitter_sizes(self, sizes: list[int]) -> None:
-        """Applique les tailles des volets."""
-        self._splitter.setSizes(sizes)
+    def toc_width(self) -> int:
+        """Largeur courante du volet sommaire (0 s'il est masqué)."""
+        return self._splitter.sizes()[2]
+
+    def set_panel_widths(self, explorer_width: int, toc_width: int) -> None:
+        """Applique les largeurs des volets ; le document occupe l'espace restant."""
+        total = self._splitter.width()
+        document = max(0, total - explorer_width - toc_width)
+        self._splitter.setSizes([explorer_width, document, toc_width])
 
     def apply_theme(self, theme: str) -> None:
         """Recolore les icônes et propage le thème aux sous-vues et aux toasts."""
@@ -195,6 +210,10 @@ class MainWindow(QMainWindow):
         self.explorer = ExplorerView(theme)
         self.document = DocumentView(theme)
         self.toc = TocView()
+        # Largeur mini < sizeHint du contenu, sinon QSplitter ne peut pas appliquer
+        # les largeurs voulues/persistées (l'explorateur reste bloqué à son sizeHint).
+        self.explorer.setMinimumWidth(config.PANEL_MIN_WIDTH)
+        self.toc.setMinimumWidth(config.PANEL_MIN_WIDTH)
         splitter.addWidget(self.explorer)
         splitter.addWidget(self.document)
         splitter.addWidget(self.toc)
@@ -223,6 +242,7 @@ class MainWindow(QMainWindow):
             ("Ctrl+=", self.btn_zoom_in.click),
             ("Ctrl+-", self.btn_zoom_out.click),
             ("Ctrl+0", self.zoom_reset_requested.emit),
+            ("Ctrl+W", self.close_tab_requested.emit),
             ("F5", self.reload_requested.emit),
         ]
         for sequence, slot in bindings:
@@ -233,6 +253,15 @@ class MainWindow(QMainWindow):
         """Repositionne les toasts lors du redimensionnement."""
         super().resizeEvent(event)
         self._toast_manager.reposition()
+
+    def closeEvent(self, event: QCloseEvent) -> None:  # noqa: N802
+        """Émet `closing` pendant que la fenêtre est encore visible (sauvegarde d'état).
+
+        Sur `app.aboutToQuit`, la fenêtre est déjà masquée et `isVisible()` renvoie
+        False pour les volets, ce qui corromprait l'état persisté (voir contrôleur).
+        """
+        self.closing.emit()
+        super().closeEvent(event)
 
     def center_on_screen(self) -> None:
         """Centre la fenêtre sur l'écran principal."""
