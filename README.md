@@ -112,6 +112,8 @@ pytest              # tests (pytest + pytest-qt)
 
 Un hook `Stop` (`.claude/settings.json`) lance `ruff check .` en fin de session de maintenance ; il suppose `ruff` installé. Ajustable ou supprimable.
 
+Les dépendances (paquets Python et actions GitHub) sont suivies par [Dependabot](.github/dependabot.yml), qui ouvre une PR hebdomadaire par montée disponible.
+
 ## Packaging Windows (.exe)
 
 ```powershell
