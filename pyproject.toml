@@ -15,3 +15,6 @@ exclude = ["tests/"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 qt_api = "pyside6"
+markers = [
+    "webengine: tests that instantiate a QWebEngineView (Chromium teardown segfaults headless; skipped in CI, run locally)",
+]
