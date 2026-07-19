@@ -1,5 +1,7 @@
 # MD Reader
 
+[![CI](https://github.com/TiercelinQ/md-reader/actions/workflows/ci.yml/badge.svg)](https://github.com/TiercelinQ/md-reader/actions/workflows/ci.yml)
+
 Visionneuse desktop Windows de fichiers Markdown en **prévisualisation seule** (aucune édition). Rendu Markdown propre et **diagrammes Mermaid** soignés, dans une interface master-detail (explorateur, document, sommaire).
 
 Généré avec le framework Python App Generator v1.1.0 · Design system v2.0.

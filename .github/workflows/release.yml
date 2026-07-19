@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Verify version consistency
+        shell: pwsh
+        run: |
+          $tagVersion = "${{ github.ref_name }}" -replace '^v', ''
+          $appVersion = (Select-String -Path config.py -Pattern 'APP_VERSION.*?"([^"]+)"' | Select-Object -First 1).Matches[0].Groups[1].Value
+          $changelogTop = (Select-String -Path docs/release/CHANGELOG.md -Pattern '^## \[([0-9]+\.[0-9]+\.[0-9]+)\]' | Select-Object -First 1).Matches[0].Groups[1].Value
+          Write-Host "tag=$tagVersion  config.py=$appVersion  changelog=$changelogTop"
+          if ($tagVersion -ne $appVersion) { Write-Error "Tag '$tagVersion' != config.py '$appVersion'"; exit 1 }
+          if ($changelogTop -ne $appVersion) { Write-Error "CHANGELOG '$changelogTop' != config.py '$appVersion'"; exit 1 }
+          Write-Host "Version consistency OK: $appVersion"
+
+      - name: Build executable (PyInstaller)
+        run: pyinstaller build.spec --noconfirm
+
+      - name: Extract changelog section
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $lines = Get-Content docs/release/CHANGELOG.md
+          $body = @(); $inSection = $false
+          foreach ($line in $lines) {
+            if ($line -match "^## \[$([regex]::Escape($version))\]") { $inSection = $true; continue }
+            elseif ($inSection -and $line -match "^## ") { break }
+            elseif ($inSection) { $body += $line }
+          }
+          ($body -join "`n").Trim() | Out-File -FilePath release_notes.md -Encoding utf8
+          Get-Content release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          body_path: release_notes.md
+          files: "dist/MD Reader.exe"
