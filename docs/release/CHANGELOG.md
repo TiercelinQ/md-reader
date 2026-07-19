@@ -5,6 +5,11 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-19
+### Added
+- Multiple documents can be open at once in tabs: opening a file adds a tab (or focuses it if already open), tabs close with the close button or Ctrl+W, and open tabs are restored on the next launch.
+- The explorer and table-of-contents panels now persist their open/closed state and their width, kept even after the panel is hidden and restored on the next launch.
+
 ## [1.0.1] - 2026-07-19
 ### Changed
 - Faster startup: the splash screen is now dismissed as soon as the welcome page is ready instead of after a fixed delay.
