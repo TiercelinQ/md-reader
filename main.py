@@ -5,9 +5,9 @@ import sys
 from pathlib import Path
 from types import TracebackType
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QElapsedTimer, Qt, QTimer
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QSplashScreen
 
 import config
 from controllers.document_controller import DocumentController
@@ -111,8 +111,35 @@ def main() -> None:
     app.aboutToQuit.connect(main_controller.save_state)
 
     window.show()
-    QTimer.singleShot(config.SPLASH_MIN_DURATION_MS, lambda: splash.finish(window))
+    _schedule_splash_dismiss(splash, window)
     sys.exit(app.exec())
+
+
+def _schedule_splash_dismiss(splash: QSplashScreen, window: MainWindow) -> None:
+    """Ferme le splash quand la page d'accueil a fini de charger (disponibilité réelle).
+
+    Respecte un plancher minimal (SPLASH_MIN_DURATION_MS) pour éviter un flash, et
+    un repli (SPLASH_MAX_WAIT_MS) qui garantit la fermeture si `loadFinished` ne
+    survient pas.
+    """
+    elapsed = QElapsedTimer()
+    elapsed.start()
+    dismissed = False
+
+    def finish() -> None:
+        nonlocal dismissed
+        if dismissed:
+            return
+        dismissed = True
+        splash.finish(window)
+
+    def on_ready(_ok: bool) -> None:
+        window.document.load_finished.disconnect(on_ready)
+        remaining = max(0, config.SPLASH_MIN_DURATION_MS - elapsed.elapsed())
+        QTimer.singleShot(remaining, finish)
+
+    window.document.load_finished.connect(on_ready)
+    QTimer.singleShot(config.SPLASH_MAX_WAIT_MS, finish)
 
 
 if __name__ == "__main__":
